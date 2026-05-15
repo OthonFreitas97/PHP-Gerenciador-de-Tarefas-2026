@@ -1,7 +1,6 @@
 <?php
 require_once 'init.php';
 
-// Se já estiver logado, vai direto pro painel
 if (isset($_SESSION['usuario_logado'])) {
     header('Location: painel.php');
     exit;
@@ -13,7 +12,7 @@ if (isset($_SESSION['usuario_logado'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Gerenciador de Tarefas</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./assets/style.css">
 </head>
 <body>
     <div class="container">
@@ -25,6 +24,20 @@ if (isset($_SESSION['usuario_logado'])) {
             </div>
 
             <form action="processar_login.php" method="post">
+                <?php if (!empty($_SESSION['erro_login'])): ?>
+                    <div class="alert alert-error">
+                        <?= htmlspecialchars($_SESSION['erro_login']) ?>
+                        <?php unset($_SESSION['erro_login']); ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($_SESSION['sucesso_cadastro'])): ?>
+                    <div class="alert alert-success">
+                        <?= htmlspecialchars($_SESSION['sucesso_cadastro']) ?>
+                        <?php unset($_SESSION['sucesso_cadastro']); ?>
+                    </div>
+                <?php endif; ?>
+
                 <div class="form-group">
                     <label for="email">E-mail</label>
                     <input type="email" name="email" id="email" placeholder="seu@email.com" required>

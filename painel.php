@@ -1,16 +1,18 @@
 <?php
 require_once 'init.php';
 
-// Bloqueia acesso se não estiver logado
 verificarAcesso();
 
-// Pega o nome do usuário logado
 $usuario = $_SESSION['usuario_logado']['nome'];
+$usuario_id = $_SESSION['usuario_logado']['id'];
 
-// Pega todas as tarefas da sessão
-$tarefas = $_SESSION['tarefas'] ?? [];
+$tarefas = [];
+foreach ($_SESSION['tarefas'] as $t) {
+    if ($t['usuario_id'] == $usuario_id) {
+        $tarefas[] = $t;
+    }
+}
 
-// Conta tarefas por status (antes de filtrar)
 $total      = count($tarefas);
 $pendentes  = 0;
 $andamento  = 0;
@@ -22,12 +24,9 @@ foreach ($tarefas as $t) {
     if ($t['status'] === 'concluida')  $concluidas++;
 }
 
-// Pega os valores dos filtros enviados pela URL
 $filtro_status      = $_GET['status']      ?? '';
 $filtro_responsavel = $_GET['responsavel'] ?? '';
-$filtro_data        = $_GET['data']        ?? '';
 
-// Monta lista de responsáveis para o select
 $responsaveis = [];
 foreach ($tarefas as $t) {
     if (!empty($t['responsavel']) && !in_array($t['responsavel'], $responsaveis)) {
@@ -35,29 +34,17 @@ foreach ($tarefas as $t) {
     }
 }
 
-// Aplica os filtros com foreach simples
 $tarefas_filtradas = [];
-
-foreach ($tarefas as $id => $t) {
-
-    // Filtra por status
+foreach ($tarefas as $t) {
     if ($filtro_status != '' && $t['status'] != $filtro_status) {
         continue;
     }
 
-    // Filtra por responsável
-    $responsavel = isset($t['responsavel']) ? $t['responsavel'] : '';
-    if ($filtro_responsavel != '' && $responsavel != $filtro_responsavel) {
+    if ($filtro_responsavel != '' && $t['responsavel'] != $filtro_responsavel) {
         continue;
     }
 
-    // Filtra por data limite
-    $data_limite = isset($t['data_limite']) ? $t['data_limite'] : '';
-    if ($filtro_data != '' && $data_limite != $filtro_data) {
-        continue;
-    }
-
-    $tarefas_filtradas[$id] = $t;
+    $tarefas_filtradas[] = $t;
 }
 ?>
 <!DOCTYPE html>
@@ -66,11 +53,10 @@ foreach ($tarefas as $id => $t) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel - Gerenciador de Tarefas</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./assets/style.css">
 </head>
 <body>
 
-    <!-- Cabeçalho -->
     <header class="topbar">
         <div class="topbar-left">
             <span class="icon">✔</span>
@@ -84,7 +70,6 @@ foreach ($tarefas as $id => $t) {
 
     <main class="painel-container">
 
-        <!-- Resumo por status -->
         <div class="stats-grid">
             <div class="stat-card stat-total">
                 <span class="stat-numero"><?= $total ?></span>
@@ -104,7 +89,6 @@ foreach ($tarefas as $id => $t) {
             </div>
         </div>
 
-        <!-- Filtros -->
         <form method="get" action="painel.php" class="filtros-form">
             <div class="filtros-grid">
 
@@ -143,7 +127,6 @@ foreach ($tarefas as $id => $t) {
             </div>
         </form>
 
-        <!-- Linha com título e botão nova tarefa -->
         <div class="painel-toolbar">
             <h2 class="painel-titulo">
                 Minhas Tarefas
@@ -154,7 +137,6 @@ foreach ($tarefas as $id => $t) {
             <a href="nova_tarefa.php" class="btn-primary">+ Nova Tarefa</a>
         </div>
 
-        <!-- Lista de tarefas -->
         <?php if (empty($tarefas_filtradas)): ?>
             <div class="empty-state">
                 <?php if ($filtro_status || $filtro_responsavel || $filtro_data): ?>

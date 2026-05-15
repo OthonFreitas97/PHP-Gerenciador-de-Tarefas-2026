@@ -1,7 +1,6 @@
 <?php
 require_once 'init.php';
 
-// Verifica se o usuário está logado
 verificarAcesso();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -9,10 +8,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $titulo      = trim($_POST['titulo']      ?? '');
     $descricao   = trim($_POST['descricao']   ?? '');
     $responsavel = trim($_POST['responsavel'] ?? '');
-    $dataLimite  = $_POST['data_limite']      ?? '';
-    $status      = $_POST['status']           ?? 'Pendente';
+    $dataVencimento  = $_POST['data_vencimento']      ?? '';
+    $status      = $_POST['status']           ?? 'pendente';
 
-    // --- Validações ---
     $erros = [];
 
     if (empty($titulo)) {
@@ -27,38 +25,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $erros[] = 'O responsável é obrigatório.';
     }
 
-    if (empty($dataLimite)) {
-        $erros[] = 'A data limite é obrigatória.';
+    if (empty($dataVencimento)) {
+        $erros[] = 'A data de vencimento é obrigatória.';
     }
 
-    $status_validos = ['Pendente', 'Em andamento', 'Concluída'];
+    $status_validos = ['pendente', 'andamento', 'concluida'];
     if (!in_array($status, $status_validos)) {
         $erros[] = 'Status inválido.';
     }
 
-    // Se houver erros, volta para o formulário com as mensagens
     if (!empty($erros)) {
         $_SESSION['erros_tarefa'] = $erros;
         header('Location: nova_tarefa.php');
         exit;
     }
     
-    // --- Salva a tarefa na sessão ---
     $novaTarefa = [
+        'id' => count($_SESSION['tarefas']) + 1,
         'titulo'      => htmlspecialchars($titulo),
         'descricao'   => htmlspecialchars($descricao),
         'responsavel' => htmlspecialchars($responsavel),
-        'data_limite' => $dataLimite,
+        'data_vencimento' => $dataVencimento,
         'status'      => $status,
-        'criado_por'  => $_SESSION['usuario_logado']['nome'],
-        'criado_em'   => date('d/m/Y H:i'),
-        'historico'   => [
-            [
-                'acao'      => 'Tarefa criada',
-                'usuario'   => $_SESSION['usuario_logado']['nome'],
-                'data_hora' => date('d/m/Y H:i')
-            ]
-        ]
+        'usuario_id'  => $_SESSION['usuario_logado']['id'],
+        'data_criacao' => date('Y-m-d H:i:s')
     ];
 
     $_SESSION['tarefas'][] = $novaTarefa;

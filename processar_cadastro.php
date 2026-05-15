@@ -8,7 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $senha = $_POST['senha'] ?? '';
     $conf  = $_POST['conf_senha'] ?? '';
 
-    // --- Validações ---
     $erros = [];
 
     if (empty($nome)) {
@@ -27,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $erros[] = 'As senhas não coincidem.';
     }
 
-    // Verifica se o e-mail já está cadastrado
     foreach ($_SESSION['usuarios'] as $u) {
         if ($u['email'] === $email) {
             $erros[] = 'Este e-mail já está cadastrado.';
@@ -35,15 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    // Se houver erros, volta para o cadastro com as mensagens
     if (!empty($erros)) {
         $_SESSION['erros_cadastro'] = $erros;
         header('Location: cadastro.php');
         exit;
     }
 
-    // --- Salva o usuário na sessão ---
     $novoUsuario = [
+        'id' => count($_SESSION['usuarios']) + 1,
         'nome'  => htmlspecialchars($nome),
         'email' => htmlspecialchars($email),
         'senha' => password_hash($senha, PASSWORD_DEFAULT)
