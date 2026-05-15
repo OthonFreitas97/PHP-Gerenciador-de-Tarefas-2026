@@ -1,4 +1,27 @@
 <?php
+session_start();
+
+// VERIFICA LOGIN
+if (!isset($_SESSION['usuario'])) {
+    header('Location: index.php');
+    exit;
+}
+
+// CRIA ARRAY DE TAREFAS
+if (!isset($_SESSION['tarefas'])) {
+    $_SESSION['tarefas'] = [];
+}
+
+// CADASTRO DA TAREFA
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $titulo = $_POST['titulo'];
+    $descricao = $_POST['descricao'];
+    $responsavel = $_POST['responsavel'];
+    $dataLimite = $_POST['data_limite'];
+    $status = $_POST['status'];
+
+    $novaTarefa = [
         'descricao' => $descricao,
         'responsavel' => $responsavel,
         'data_limite' => $dataLimite,
