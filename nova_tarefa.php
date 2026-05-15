@@ -1,4 +1,5 @@
 <?php
+        'descricao' => $descricao,
         'responsavel' => $responsavel,
         'data_limite' => $dataLimite,
         'status' => $status
