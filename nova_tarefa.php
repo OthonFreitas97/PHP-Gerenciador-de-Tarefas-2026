@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $status = $_POST['status'];
 
     $novaTarefa = [
+        'titulo' => $titulo,
         'descricao' => $descricao,
         'responsavel' => $responsavel,
         'data_limite' => $dataLimite,
@@ -51,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <main>
 
-    <form action="" method="post">
+    <form action="processar_tarefa.php" method="post">
 
         <div class="form-group">
             <label for="titulo">Título:</label>
