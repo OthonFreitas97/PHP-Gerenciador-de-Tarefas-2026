@@ -1,204 +1,273 @@
 <?php
 require_once 'init.php';
 
-// Bloqueia acesso se não estiver logado
 verificarAcesso();
 
-// Pega o nome do usuário logado
-$usuario = $_SESSION['usuario_logado']['nome'];
-
-// Pega todas as tarefas da sessão
-$tarefas = $_SESSION['tarefas'] ?? [];
-
-// Conta tarefas por status (antes de filtrar)
-$total      = count($tarefas);
-$pendentes  = 0;
-$andamento  = 0;
-$concluidas = 0;
-
-foreach ($tarefas as $t) {
-    if ($t['status'] === 'pendente')   $pendentes++;
-    if ($t['status'] === 'andamento')  $andamento++;
-    if ($t['status'] === 'concluida')  $concluidas++;
+if (isset($_SESSION['tarefas'])) {
+    $tarefas = $_SESSION['tarefas'];
+} else {
+    $tarefas = [];
 }
 
-// Pega os valores dos filtros enviados pela URL
-$filtro_status      = $_GET['status']      ?? '';
-$filtro_responsavel = $_GET['responsavel'] ?? '';
-$filtro_data        = $_GET['data']        ?? '';
+$filtro_status = '';
+$filtro_responsavel = '';
+$filtro_data = '';
 
-// Monta lista de responsáveis para o select
+if (isset($_GET['status'])) {
+    $filtro_status = $_GET['status'];
+}
+
+if (isset($_GET['responsavel'])) {
+    $filtro_responsavel = $_GET['responsavel'];
+}
+
+if (isset($_GET['data'])) {
+    $filtro_data = $_GET['data'];
+}
+
 $responsaveis = [];
-foreach ($tarefas as $t) {
-    if (!empty($t['responsavel']) && !in_array($t['responsavel'], $responsaveis)) {
-        $responsaveis[] = $t['responsavel'];
+
+foreach ($tarefas as $tarefa) {
+
+    if (
+        !empty($tarefa['responsavel']) &&
+        !in_array($tarefa['responsavel'], $responsaveis)
+    ) {
+
+        $responsaveis[] = $tarefa['responsavel'];
     }
 }
 
-// Aplica os filtros com foreach simples
 $tarefas_filtradas = [];
 
-foreach ($tarefas as $id => $t) {
+foreach ($tarefas as $id => $tarefa) {
 
-    // Filtra por status
-    if ($filtro_status != '' && $t['status'] != $filtro_status) {
-        continue;
+    
+    if ($filtro_status != '') {
+
+        if ($tarefa['status'] != $filtro_status) {
+            continue;
+        }
     }
 
-    // Filtra por responsável
-    $responsavel = isset($t['responsavel']) ? $t['responsavel'] : '';
-    if ($filtro_responsavel != '' && $responsavel != $filtro_responsavel) {
-        continue;
+   
+    if ($filtro_responsavel != '') {
+
+        if ($tarefa['responsavel'] != $filtro_responsavel) {
+            continue;
+        }
     }
 
-    // Filtra por data limite
-    $data_limite = isset($t['data_limite']) ? $t['data_limite'] : '';
-    if ($filtro_data != '' && $data_limite != $filtro_data) {
-        continue;
-    }
 
-    $tarefas_filtradas[$id] = $t;
+    if ($filtro_data != '') {
+
+        if (substr($tarefa['data_vencimento'], 0, 10) != $filtro_data) {
+            continue;
+        }
+    }
+    
+    $tarefas_filtradas[$id] = $tarefa;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel - Gerenciador de Tarefas</title>
-    <link rel="stylesheet" href="style.css">
+
+    <title>Painel de Tarefas</title>
+
+    <link rel="stylesheet" href="./assets/style.css">
+
 </head>
+
 <body>
 
-    <!-- Cabeçalho -->
-    <header class="topbar">
-        <div class="topbar-left">
-            <span class="icon">✔</span>
-            <span class="topbar-title">Gerenciador de Tarefas</span>
-        </div>
-        <div class="topbar-right">
-            <span class="topbar-user">Olá, <strong><?= $usuario ?></strong></span>
-            <a href="logout.php" class="btn-logout">Sair</a>
-        </div>
-    </header>
+<header>
 
-    <main class="painel-container">
+    <h1>Gerenciador de Tarefas</h1>
 
-        <!-- Resumo por status -->
-        <div class="stats-grid">
-            <div class="stat-card stat-total">
-                <span class="stat-numero"><?= $total ?></span>
-                <span class="stat-label">Total</span>
+    <p>
+        Usuário logado:
+        <?php echo htmlspecialchars($_SESSION['usuario_logado']['nome']); ?>
+    </p>
+
+</header>
+
+<nav>
+
+    <a href="painel.php">Todas</a>
+
+    <a href="painel.php?status=pendente">
+        Pendentes
+    </a>
+
+    <a href="painel.php?status=andamento">
+        Em andamento
+    </a>
+
+    <a href="painel.php?status=concluida">
+        Concluídas
+    </a>
+
+    <a href="nova_tarefa.php">
+        Nova Tarefa
+    </a>
+
+    <a href="logout.php">
+        Sair
+    </a>
+
+</nav>
+
+<main class="painel-container">
+
+    <section class="card">
+
+        <h2>Filtros</h2>
+
+        <form method="GET">
+
+            <div class="form-group">
+
+                <label for="responsavel">
+                    Responsável
+                </label>
+
+                <select name="responsavel" id="responsavel">
+
+                    <option value="">
+                        Todos
+                    </option>
+
+                    <?php foreach ($responsaveis as $responsavel) { ?>
+
+                        <option
+                            value="<?php echo $responsavel; ?>">
+
+                            <?php echo $responsavel; ?>
+
+                        </option>
+
+                    <?php } ?>
+
+                </select>
+
             </div>
-            <div class="stat-card stat-pendente">
-                <span class="stat-numero"><?= $pendentes ?></span>
-                <span class="stat-label">Pendentes</span>
-            </div>
-            <div class="stat-card stat-andamento">
-                <span class="stat-numero"><?= $andamento ?></span>
-                <span class="stat-label">Em Andamento</span>
-            </div>
-            <div class="stat-card stat-concluida">
-                <span class="stat-numero"><?= $concluidas ?></span>
-                <span class="stat-label">Concluídas</span>
-            </div>
-        </div>
 
-        <!-- Filtros -->
-        <form method="get" action="painel.php" class="filtros-form">
-            <div class="filtros-grid">
 
-                <div class="form-group">
-                    <label for="status">Status</label>
-                    <select name="status" id="status">
-                        <option value="">Todos</option>
-                        <option value="pendente"  <?= $filtro_status === 'pendente'  ? 'selected' : '' ?>>Pendente</option>
-                        <option value="andamento" <?= $filtro_status === 'andamento' ? 'selected' : '' ?>>Em Andamento</option>
-                        <option value="concluida" <?= $filtro_status === 'concluida' ? 'selected' : '' ?>>Concluída</option>
-                    </select>
-                </div>
+            <div class="form-group">
 
-                <div class="form-group">
-                    <label for="responsavel">Responsável</label>
-                    <select name="responsavel" id="responsavel">
-                        <option value="">Todos</option>
-                        <?php foreach ($responsaveis as $r): ?>
-                            <option value="<?= $r ?>" <?= $filtro_responsavel === $r ? 'selected' : '' ?>>
-                                <?= $r ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+                <label for="data">
+                    Data
+                </label>
 
-                <div class="form-group">
-                    <label for="data">Data Limite</label>
-                    <input type="date" name="data" id="data" value="<?= $filtro_data ?>">
-                </div>
-
-                <div class="filtros-acoes">
-                    <button type="submit" class="btn-primary">Filtrar</button>
-                    <a href="painel.php" class="btn-limpar">Limpar</a>
-                </div>
+                <input
+                    type="date"
+                    name="data"
+                    id="data">
 
             </div>
+
+
+            <button type="submit">
+                Filtrar
+            </button>
+
         </form>
 
-        <!-- Linha com título e botão nova tarefa -->
-        <div class="painel-toolbar">
-            <h2 class="painel-titulo">
-                Minhas Tarefas
-                <?php if ($filtro_status || $filtro_responsavel || $filtro_data): ?>
-                    <span class="filtro-ativo">filtro ativo</span>
-                <?php endif; ?>
-            </h2>
-            <a href="nova_tarefa.php" class="btn-primary">+ Nova Tarefa</a>
-        </div>
+    </section>
 
-        <!-- Lista de tarefas -->
-        <?php if (empty($tarefas_filtradas)): ?>
-            <div class="empty-state">
-                <?php if ($filtro_status || $filtro_responsavel || $filtro_data): ?>
-                    <p>Nenhuma tarefa encontrada com esses filtros.</p>
-                    <a href="painel.php" class="btn-primary">Ver todas</a>
-                <?php else: ?>
-                    <p>Nenhuma tarefa cadastrada ainda.</p>
-                    <a href="nova_tarefa.php" class="btn-primary">Criar primeira tarefa</a>
-                <?php endif; ?>
-            </div>
 
-        <?php else: ?>
-            <div class="tarefas-lista">
-                <?php foreach ($tarefas_filtradas as $id => $tarefa): ?>
-                    <div class="tarefa-card status-<?= $tarefa['status'] ?>">
-                        <div class="tarefa-info">
-                            <h3 class="tarefa-titulo"><?= $tarefa['titulo'] ?></h3>
-                            <p class="tarefa-desc"><?= $tarefa['descricao'] ?? '' ?></p>
-                            <?php if (!empty($tarefa['responsavel'])): ?>
-                                <p class="tarefa-responsavel"> <?= $tarefa['responsavel'] ?></p>
-                            <?php endif; ?>
-                            <?php if (!empty($tarefa['data_limite'])): ?>
-                                <p class="tarefa-data"> <?= $tarefa['data_limite'] ?></p>
-                            <?php endif; ?>
-                        </div>
-                        <div class="tarefa-meta">
-                            <span class="badge badge-<?= $tarefa['status'] ?>">
-                                <?php
-                                    $labels = [
-                                        'pendente'  => 'Pendente',
-                                        'andamento' => 'Em Andamento',
-                                        'concluida' => 'Concluída',
-                                    ];
-                                    echo $labels[$tarefa['status']] ?? $tarefa['status'];
-                                ?>
-                            </span>
-                            <a href="detalhes_tarefa.php?id=<?= $id ?>" class="btn-detalhes">Ver detalhes</a>
-                        </div>
+    <section class="card">
+
+        <h2>Lista de Tarefas</h2>
+
+        <?php if (empty($tarefas_filtradas)) { ?>
+
+            <p>
+                Nenhuma tarefa encontrada.
+            </p>
+
+        <?php } else { ?>
+
+            <?php foreach ($tarefas_filtradas as $id => $tarefa) { ?>
+
+                <div class="tarefa">
+
+                    <div class="tarefa-info">
+
+                        <h3>
+                            <?php echo htmlspecialchars($tarefa['titulo']); ?>
+                        </h3>
+
+                        <p>
+                            <?php echo htmlspecialchars($tarefa['descricao']); ?>
+                        </p>
+
+                        <p>
+                            <strong>Responsável:</strong>
+
+                            <?php echo htmlspecialchars($tarefa['responsavel']); ?>
+                        </p>
+
+
+                        <?php if (!empty($tarefa['data_vencimento'])) { ?>
+
+                            <p class="tarefa-data">
+
+                                <?php echo date(
+                                    'd/m/Y',
+                                    strtotime($tarefa['data_vencimento'])
+                                ); ?>
+
+                            </p>
+
+                        <?php } ?>
+
                     </div>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
 
-    </main>
+
+                    <div class="tarefa-meta">
+
+                        <span class="badge badge-<?php echo $tarefa['status']; ?>">
+
+                            <?php
+                            $labels = [
+
+                                'pendente' => 'Pendente',
+                                'andamento' => 'Em andamento',
+                                'concluida' => 'Concluída'
+
+                            ];
+
+                            echo $labels[$tarefa['status']];
+                            ?>
+
+                        </span>
+
+
+                       <a
+                            href="detalhes_tarefa.php?id=<?php echo $tarefa['id']; ?>"
+                            class="btn-detalhes">
+
+                            Ver detalhes
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            <?php } ?>
+
+        <?php } ?>
+
+    </section>
+
+</main>
 
 </body>
 </html>
