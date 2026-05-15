@@ -42,7 +42,7 @@ $tarefas_filtradas = [];
 
 foreach ($tarefas as $id => $tarefa) {
 
-    // Filtro de status
+    
     if ($filtro_status != '') {
 
         if ($tarefa['status'] != $filtro_status) {
@@ -50,7 +50,7 @@ foreach ($tarefas as $id => $tarefa) {
         }
     }
 
-    // Filtro de responsável
+   
     if ($filtro_responsavel != '') {
 
         if ($tarefa['responsavel'] != $filtro_responsavel) {
@@ -58,15 +58,14 @@ foreach ($tarefas as $id => $tarefa) {
         }
     }
 
-    // Filtro de data
+
     if ($filtro_data != '') {
 
-        if ($tarefa['data_vencimento'] != $filtro_data) {
-            continue;
-        }
-    }
-
-    // Mantém o índice original
+        if (substr($tarefa['data_vencimento'], 0, 10) != $filtro_data) {
+            continue;
+        }
+    }
+    
     $tarefas_filtradas[$id] = $tarefa;
 }
 ?>
@@ -123,7 +122,7 @@ foreach ($tarefas as $id => $tarefa) {
 
 </nav>
 
-<main>
+<main class="painel-container">
 
     <section class="card">
 
@@ -250,13 +249,13 @@ foreach ($tarefas as $id => $tarefa) {
                         </span>
 
 
-                        <a
-                            href="detalhes_tarefa.php?id=<?php echo $id; ?>"
-                            class="btn-detalhes">
+                       <a
+                            href="detalhes_tarefa.php?id=<?php echo $tarefa['id']; ?>"
+                            class="btn-detalhes">
 
-                            Ver detalhes
+                            Ver detalhes
 
-                        </a>
+                        </a>
 
                     </div>
 
