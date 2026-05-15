@@ -117,45 +117,35 @@ $labels = [
             ); ?>
         </p>
 
-        <p>
-            <strong>Status:</strong>
+       <p>
+            <strong>Status:</strong>
+            <?php echo $labels[$tarefa['status']]; ?>
+        </p>
 
-            <?php echo $labels[$tarefa['status']]; ?>
-        </p>
-
-
-
-        <form action="atualizar_status.php?id=<?php echo $id; ?>" method="post">
-
-            <div class="form-group">
-
-                <label for="status">
-                    Atualizar status
-                </label>
-
-                <select name="status" id="status">
-
-                    <option value="pendente">
-                        Pendente
-                    </option>
-
-                    <option value="andamento">
-                        Em andamento
-                    </option>
-
-                    <option value="concluida">
-                        Concluída
-                    </option>
-
-                </select>
-
-            </div>
-
-            <button type="submit" class="btn-primary">
-                Atualizar status
-            </button>
-
-        </form>
+        <?php 
+        $usuarioLogado = $_SESSION['usuario_logado']['nome'];
+        $pode_editar = ($tarefa['responsavel'] === $usuarioLogado || $tarefa['criador'] === $usuarioLogado);
+        
+        if ($pode_editar): 
+        ?>
+        <form action="atualizar_status.php?id=<?php echo $id; ?>" method="post">
+            <div class="form-group">
+                <label for="status">Atualizar status</label>
+                <select name="status" id="status">
+                    <option value="pendente" <?php if($tarefa['status'] == 'pendente') echo 'selected'; ?>>Pendente</option>
+                    <option value="andamento" <?php if($tarefa['status'] == 'andamento') echo 'selected'; ?>>Em andamento</option>
+                    <option value="concluida" <?php if($tarefa['status'] == 'concluida') echo 'selected'; ?>>Concluída</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary">Atualizar status</button>
+        </form>
+        <?php else: ?>
+        <div class="alert" style="background: var(--bg); border: 1px solid var(--border); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+            <p style="font-size: 0.9em; color: var(--text-muted); margin: 0;">
+                <em>Apenas o criador (<?= htmlspecialchars($tarefa['criador'] ?? '') ?>) ou o responsável (<?= htmlspecialchars($tarefa['responsavel'] ?? '') ?>) podem alterar o status desta tarefa.</em>
+            </p>
+        </div>
+        <?php endif; ?>
 
 
         <?php if (isset($tarefa['criador'])) { ?>
