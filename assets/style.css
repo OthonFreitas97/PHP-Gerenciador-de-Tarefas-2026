@@ -1,581 +1,219 @@
-/* =============================================
-   GERENCIADOR DE TAREFAS — style.css
-   ============================================= */
-
-/* ---------- Reset & Base ---------- */
-*, *::before, *::after {
-    box-sizing: border-box;
+* {
     margin: 0;
     padding: 0;
-}
-
-:root {
-    --bg:           #f4f5f7;
-    --surface:      #ffffff;
-    --border:       #e2e4e9;
-    --text:         #1a1d23;
-    --text-muted:   #6b7280;
-    --primary:      #2563eb;
-    --primary-dark: #1d4ed8;
-    --danger:       #dc2626;
-
-    --pendente-bg:  #fff7ed;
-    --pendente-bd:  #fed7aa;
-    --pendente-cor: #c2410c;
-
-    --andamento-bg: #eff6ff;
-    --andamento-bd: #bfdbfe;
-    --andamento-cor:#1d4ed8;
-
-    --concluida-bg: #f0fdf4;
-    --concluida-bd: #bbf7d0;
-    --concluida-cor:#15803d;
-
-    --radius:       10px;
-    --shadow:       0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    box-sizing: border-box;
 }
 
 body {
+    background-color: #f4f6f8;
     font-family: Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
+    color: #1f2937;
+    line-height: 1.5;
 }
 
-a { color: var(--primary); text-decoration: none; }
-a:hover { text-decoration: underline; }
+header {
+    background-color: #ffffff;
+    padding: 20px 40px;
+    border-bottom: 1px solid #e5e7eb;
+}
 
-/* ---------- Login / Cadastro ---------- */
-body:has(.container) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+header h1 {
+    margin-bottom: 8px;
+    font-size: 28px;
+}
+
+header p {
+    color: #6b7280;
+}
+
+nav {
+    background-color: #ffffff;
+    padding: 14px 40px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+nav a {
+    display: inline-block;
+    margin-right: 14px;
+    text-decoration: none;
+    color: #2563eb;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+nav a:hover {
+    opacity: 0.7;
+}
+
+main {
+    padding: 30px 40px;
 }
 
 .container {
-    width: 100%;
-    max-width: 400px;
-    padding: 24px 16px;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
 .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 40px 36px;
+    background-color: #ffffff;
+    padding: 28px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .card-header {
-    text-align: center;
-    margin-bottom: 32px;
-}
-
-.card-header .icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    background: var(--primary);
-    color: #fff;
-    border-radius: 12px;
-    font-size: 22px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .card-header h1 {
-    font-size: 1.4rem;
-    font-weight: 700;
     margin-bottom: 6px;
 }
 
 .card-header p {
-    color: var(--text-muted);
-    font-size: .9rem;
+    color: #6b7280;
 }
 
-/* ---------- Formulários ---------- */
 .form-group {
     margin-bottom: 18px;
 }
 
-.form-group label {
+label {
     display: block;
-    font-size: .85rem;
-    font-weight: 600;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    background-color: #ffffff;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button,
+.btn-primary,
+.btn-secondary,
+.btn-detalhes {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+button:hover,
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-detalhes:hover {
+    opacity: 0.85;
+}
+
+button,
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+}
+
+.btn-secondary,
+.btn-detalhes {
+    background-color: #f3f4f6;
+    color: #111827;
+    border: 1px solid #d1d5db;
+}
+
+.tarefa {
+    padding: 18px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    background-color: #ffffff;
+}
+
+.tarefa h3 {
     margin-bottom: 6px;
 }
 
-.form-group input,
-.form-group textarea,
-.form-group select {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: .95rem;
-    background: var(--bg);
-    color: var(--text);
-    transition: border-color .2s, box-shadow .2s;
+.tarefa p {
+    margin-bottom: 4px;
 }
 
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
-    background: #fff;
-}
-
-/* ---------- Botões ---------- */
-.btn-primary {
-    display: inline-block;
-    width: 100%;
-    padding: 11px 20px;
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: .95rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-    transition: background .2s, transform .1s;
-}
-
-.btn-primary:hover {
-    background: var(--primary-dark);
-    text-decoration: none;
-}
-
-.btn-primary:active { transform: scale(.98); }
-
-.link-bottom {
-    text-align: center;
-    margin-top: 20px;
-    font-size: .875rem;
-    color: var(--text-muted);
-}
-
-/* ---------- Topbar (Painel) ---------- */
-.topbar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 32px;
-    height: 60px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-.topbar-left {
+.tarefa-meta {
+    margin-top: 12px;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.topbar-left .icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: var(--primary);
-    color: #fff;
-    border-radius: 8px;
-    font-size: 15px;
+.tarefa-data {
+    color: #6b7280;
+    font-size: 14px;
+    margin-top: 6px;
 }
 
-.topbar-title {
-    font-weight: 700;
-    font-size: 1rem;
-}
-
-.topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.topbar-user {
-    font-size: .875rem;
-    color: var(--text-muted);
-}
-
-.btn-logout {
-    padding: 6px 14px;
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    font-size: .85rem;
-    font-weight: 500;
-    color: var(--danger);
-    transition: background .2s;
-}
-
-.btn-logout:hover {
-    background: #fef2f2;
-    text-decoration: none;
-}
-
-/* ---------- Painel Principal ---------- */
-.painel-container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 24px;
-}
-
-/* Stats */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 36px;
-}
-
-.stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    text-align: center;
-}
-
-.stat-numero {
-    display: block;
-    font-size: 2rem;
-    font-weight: 700;
-    font-family: monospace;
-}
-
-.stat-label {
-    font-size: .8rem;
-    color: var(--text-muted);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-}
-
-.stat-pendente  .stat-numero { color: var(--pendente-cor); }
-.stat-andamento .stat-numero { color: var(--andamento-cor); }
-.stat-concluida .stat-numero { color: var(--concluida-cor); }
-
-/* Toolbar */
-.painel-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.painel-titulo {
-    font-size: 1.1rem;
-    font-weight: 700;
-}
-
-.painel-toolbar .btn-primary {
-    width: auto;
-    padding: 9px 18px;
-    font-size: .875rem;
-}
-
-/* Lista de Tarefas */
-.tarefas-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.tarefa-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    transition: box-shadow .2s;
-}
-
-.tarefa-card:hover { box-shadow: var(--shadow); }
-
-.tarefa-card.status-pendente  { border-left-color: var(--pendente-cor); }
-.tarefa-card.status-andamento { border-left-color: var(--andamento-cor); }
-.tarefa-card.status-concluida { border-left-color: var(--concluida-cor); }
-
-.tarefa-info { flex: 1; min-width: 0; }
-
-.tarefa-titulo {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.tarefa-desc {
-    font-size: .875rem;
-    color: var(--text-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.tarefa-meta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
-}
-
-/* Badges */
 .badge {
-    padding: 4px 10px;
+    display: inline-block;
+    padding: 6px 10px;
     border-radius: 20px;
-    font-size: .75rem;
-    font-weight: 600;
-    white-space: nowrap;
+    font-size: 13px;
+    font-weight: bold;
 }
 
 .badge-pendente {
-    background: var(--pendente-bg);
-    border: 1px solid var(--pendente-bd);
-    color: var(--pendente-cor);
+    background-color: #fef3c7;
+    color: #92400e;
 }
 
 .badge-andamento {
-    background: var(--andamento-bg);
-    border: 1px solid var(--andamento-bd);
-    color: var(--andamento-cor);
+    background-color: #dbeafe;
+    color: #1d4ed8;
 }
 
 .badge-concluida {
-    background: var(--concluida-bg);
-    border: 1px solid var(--concluida-bd);
-    color: var(--concluida-cor);
+    background-color: #dcfce7;
+    color: #166534;
 }
 
-/* Botão detalhes */
-.btn-detalhes {
-    padding: 6px 14px;
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    font-size: .8rem;
-    font-weight: 500;
-    color: var(--text);
-    background: var(--bg);
-    transition: border-color .2s, background .2s;
-}
-
-.btn-detalhes:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-    text-decoration: none;
-    background: #fff;
-}
-
-/* Empty state */
-.empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-muted);
-}
-
-.empty-state p {
-    margin-bottom: 20px;
-    font-size: 1rem;
-}
-
-.empty-state .btn-primary {
-    width: auto;
-    display: inline-block;
-    padding: 10px 24px;
-}
-
-/* ---------- Filtros ---------- */
-.filtros-form {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 28px;
-}
-
-.filtros-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
-    gap: 16px;
-    align-items: flex-end;
-}
-
-.filtros-acoes {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.filtros-acoes .btn-primary {
-    width: auto;
-    padding: 10px 18px;
-    font-size: .875rem;
-}
-
-.btn-limpar {
-    padding: 10px 14px;
-    border: 1px solid var(--border);
+.comentario,
+.historico {
+    padding: 14px;
+    border: 1px solid #e5e7eb;
     border-radius: 8px;
-    font-size: .875rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    background: var(--bg);
-    white-space: nowrap;
-    transition: border-color .2s;
+    margin-bottom: 12px;
+    background-color: #f9fafb;
 }
 
-.btn-limpar:hover {
-    border-color: var(--danger);
-    color: var(--danger);
-    text-decoration: none;
+.comentario small,
+.historico small {
+    color: #6b7280;
 }
 
-.filtro-ativo {
-    font-size: .7rem;
-    font-weight: 600;
-    background: var(--andamento-bg);
-    color: var(--andamento-cor);
-    border: 1px solid var(--andamento-bd);
-    border-radius: 20px;
-    padding: 2px 8px;
-    vertical-align: middle;
-    margin-left: 8px;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-}
-
-.tarefa-responsavel,
-.tarefa-data {
-    font-size: .8rem;
-    color: var(--text-muted);
-    margin-top: 4px;
-}
-
-/* ---------- Responsivo ---------- */
-@media (max-width: 640px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .tarefa-card {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .tarefa-meta {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .filtros-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .topbar { padding: 0 16px; }
-    .painel-container { padding: 0 16px; }
-}
-
-/* ---------- Alerts ---------- */
 .alert {
-    padding: 14px 16px;
+    padding: 14px;
     border-radius: 8px;
-    margin-bottom: 18px;
-    font-size: .95rem;
-}
-
-.alert ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.alert ul li {
-    margin-bottom: 4px;
+    margin-bottom: 20px;
 }
 
 .alert-error {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
+    background-color: #fee2e2;
     color: #991b1b;
+    border: 1px solid #fecaca;
 }
 
-.alert-success {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    color: #15803d;
-}
-
-/* ---------- Botão Secondary ---------- */
-.btn-secondary {
-    display: inline-block;
-    padding: 11px 20px;
-    background: var(--bg);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: .95rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-    transition: background .2s, border-color .2s, transform .1s;
-    margin-left: 8px;
-}
-
-.btn-secondary:hover {
-    background: #fff;
-    border-color: var(--primary);
-    color: var(--primary);
-    text-decoration: none;
-}
-
-.btn-secondary:active { transform: scale(.98); }
-
-/* Menu navigation */
-.menu {
-    list-style: none;
-    display: flex;
-    gap: 24px;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-}
-
-.menu a {
-    font-size: .95rem;
-    font-weight: 500;
-    color: var(--text);
-    transition: color .2s;
-}
-
-.menu a:hover {
-    color: var(--primary);
-    text-decoration: none;
-}
-
-/* Footer */
 footer {
     text-align: center;
     padding: 20px;
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-muted);
-    font-size: .875rem;
-    margin-top: auto;
+    color: #6b7280;
+    font-size: 14px;
 }

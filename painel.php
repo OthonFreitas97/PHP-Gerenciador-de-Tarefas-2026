@@ -80,7 +80,7 @@ foreach ($tarefas as $id => $tarefa) {
 
     <title>Painel de Tarefas</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./assets/style.css">
 
 </head>
 
