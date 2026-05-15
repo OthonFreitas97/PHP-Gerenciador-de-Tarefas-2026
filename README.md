@@ -1,3 +1,21 @@
+Othon Augusto Freitas Nascimento 
+RGM: 41606124
+
+Pedro Henrique Becker De Oliveira Felix 
+RGM: 41805640
+
+Brayan Matheus de Godoi Santos
+RGM: 41964772
+
+Julia Helena Buosi Teixeira 
+RGM: 44061919
+
+Walter Potma de Brito 
+RGM: 43101607
+
+Victor Hugo Ribeiro da Silva 
+RGM: 42520959
+
 # Gerenciador de Tarefas - PHP
 
 Um projeto simples de gerenciamento de tarefas desenvolvido em PHP com HTML e CSS. Ideal para aprender PHP básico!
